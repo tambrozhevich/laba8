@@ -19,8 +19,17 @@ public class Main {
         writeToFile("output1.txt", wordsSet.iterator());
         Collections.sort(words, (s1, s2) -> s1.compareTo(s2));
         writeToFile("output2.txt", words.iterator());
+        List<Thread> threads = new ArrayList<>();
         for (List<String> list : components) {
-            Collections.sort(list, (j1, j2) -> j1.compareTo(j2));
+            Thread thread = new Thread(() -> Collections.sort(list, (j1, j2) -> j1.compareTo(j2)));
+            thread.start();
+            threads.add(thread);
+        }
+        try {
+            for (Thread thread : threads)
+                thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         Collections.sort(components, (l1, l2) -> l1.size() - l2.size());
         int count = findCount();
